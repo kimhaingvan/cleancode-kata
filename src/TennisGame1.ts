@@ -1,5 +1,23 @@
 import { TennisGame } from './TennisGame';
 
+const SCORE_WHEN_DRAW = {
+  0: 'Love-All',
+  1: 'Fifteen-All',
+  2: 'Thirty-All',
+}
+
+const SCORE_BEFORE_DEUCE = {
+  0: 'Love',
+  1: 'Fifteen',
+  2: 'Thirty',
+  3: 'Forty'
+}
+const SCORE_AFTER_DEUCE = {
+  equalOne: 'Advantage player1',
+  equalMinusOne: 'Advantage player2',
+  biggerOne: 'Win for player1',
+  smallerMinusOne: 'Win for player2',
+}
 
 export class TennisGame1 implements TennisGame {
   private m_score1: number = 0;
@@ -19,53 +37,40 @@ export class TennisGame1 implements TennisGame {
       this.m_score2 += 1;
   }
 
-  getScore(): string {
-    let score: string = '';
-    let tempScore: number = 0;
-    if (this.m_score1 === this.m_score2) {
-      switch (this.m_score1) {
-        case 0:
-          score = 'Love-All';
-          break;
-        case 1:
-          score = 'Fifteen-All';
-          break;
-        case 2:
-          score = 'Thirty-All';
-          break;
-        default:
-          score = 'Deuce';
-          break;
+  getScoreAfterDeuce(): string {
+    const minusResult: number = this.m_score1 - this.m_score2;
+    let score_title = '';
+    if (minusResult === 1) score_title = 'equalOne';
+    else if (minusResult === -1) score_title = 'equalMinusOne';
+    else if (minusResult >= 2) score_title = 'biggerOne';
+    else score_title = 'smallerMinusOne';
+    return SCORE_AFTER_DEUCE[score_title];
+  }
 
-      }
-    }
-    else if (this.m_score1 >= 4 || this.m_score2 >= 4) {
-      const minusResult: number = this.m_score1 - this.m_score2;
-      if (minusResult === 1) score = 'Advantage player1';
-      else if (minusResult === -1) score = 'Advantage player2';
-      else if (minusResult >= 2) score = 'Win for player1';
-      else score = 'Win for player2';
-    }
-    else {
-      for (let i = 1; i < 3; i++) {
-        if (i === 1) tempScore = this.m_score1;
-        else { score += '-'; tempScore = this.m_score2; }
-        switch (tempScore) {
-          case 0:
-            score += 'Love';
-            break;
-          case 1:
-            score += 'Fifteen';
-            break;
-          case 2:
-            score += 'Thirty';
-            break;
-          case 3:
-            score += 'Forty';
-            break;
-        }
-      }
+  getScoreBeforeDeuce(): string {
+    let tempScore = 0;
+    let score = '';
+    for (let i = 1; i < 3; i++) {
+      if (i === 1) tempScore = this.m_score1;
+      else { score += '-'; tempScore = this.m_score2; }
+      score += SCORE_BEFORE_DEUCE[tempScore];
     }
     return score;
+  }
+
+  getScoreWhenDraw(): string {
+    return  SCORE_WHEN_DRAW[this.m_score1] || 'Deuce';
+  }
+
+  getScore(): string {
+    if (this.m_score1 === this.m_score2) {
+      return this.getScoreWhenDraw();
+    }
+    else if (this.m_score1 >= 4 || this.m_score2 >= 4) {
+      return this.getScoreAfterDeuce()
+    }
+    else {
+      return this.getScoreBeforeDeuce();
+    }
   }
 }

@@ -1,6 +1,11 @@
 import { TennisGame } from './TennisGame';
 
-
+const SCORES = {
+  0: 'Love',
+  1: 'Fifteen',
+  2: 'Thirty',
+  3: 'Forty'
+}
 export class TennisGame2 implements TennisGame {
   P1point: number = 0;
   P2point: number = 0;
@@ -19,36 +24,19 @@ export class TennisGame2 implements TennisGame {
   getScore(): string {
     let score: string = '';
     if (this.P1point === this.P2point && this.P1point < 4) {
-      if (this.P1point === 0)
-        score = 'Love';
-      if (this.P1point === 1)
-        score = 'Fifteen';
-      if (this.P1point === 2)
-        score = 'Thirty';
+      score = SCORES[this.P1point]
       score += '-All';
     }
     if (this.P1point === this.P2point && this.P1point >= 3)
       score = 'Deuce';
 
     if (this.P1point > 0 && this.P2point === 0) {
-      if (this.P1point === 1)
-        this.P1res = 'Fifteen';
-      if (this.P1point === 2)
-        this.P1res = 'Thirty';
-      if (this.P1point === 3)
-        this.P1res = 'Forty';
-
+      this.P1res = SCORES[this.P1point]
       this.P2res = 'Love';
       score = this.P1res + '-' + this.P2res;
     }
     if (this.P2point > 0 && this.P1point === 0) {
-      if (this.P2point === 1)
-        this.P2res = 'Fifteen';
-      if (this.P2point === 2)
-        this.P2res = 'Thirty';
-      if (this.P2point === 3)
-        this.P2res = 'Forty';
-
+      this.P2res = SCORES[this.P2point]
       this.P1res = 'Love';
       score = this.P1res + '-' + this.P2res;
     }
@@ -94,19 +82,15 @@ export class TennisGame2 implements TennisGame {
   }
 
   SetP1Score(score: number): void {
-
     for (let i = 0; i < score; i++) {
       this.P1Score();
     }
-
   }
 
   SetP2Score(score: number): void {
-
     for (let i = 0; i < score; i++) {
       this.P2Score();
     }
-
   }
 
   P1Score(): void {
